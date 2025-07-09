@@ -1,35 +1,38 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import { Component } from 'react';
 import './App.css';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import Header from './components/Header/Header';
 
-function App() {
-  const [count, setCount] = useState(0);
+export interface CardItem {
+  title: string;
+  description: string;
+}
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
+interface AppState {
+  searchQuery: string | null;
+  isLoading: boolean;
+  resultList: CardItem[];
+}
+
+class App extends Component<{}, AppState> {
+  constructor(props:{}) {
+    super(props)
+  }
+
+  onSearch = (query: string | null) => {
+    this.setState((prevState) => ({...prevState, searchQuery: query}))
+  }
+
+  render() {
+    return (
+      <ErrorBoundary fallback={<p>Something went wrong</p>}>
+        <Header />
+        {/* <Controls searchQuery={this.state.searchQuery} onSearchQueryChange={this.onSearch} />
+        <SearchResults /> */}
+        <h1>Hello!</h1>
+      </ErrorBoundary>
+    )
+  }
 }
 
 export default App;
