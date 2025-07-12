@@ -7,7 +7,7 @@ import SearchResults from './components/SearchResults/SearchResults';
 import type { UiKitCardProps } from './ui-kit/UiKitCard';
 
 interface AppState {
-  searchQuery: string | null;
+  searchQuery: string;
   isLoading: boolean;
   resultList: UiKitCardProps[];
 }
@@ -16,27 +16,42 @@ export interface Pokemon {}
 
 class App extends Component<{}, AppState> {
   state = {
-    searchQuery: null,
+    searchQuery: '',
     isLoading: false,
     resultList: []
   }
+  private readonly _searchQueryKeyInLocalStorage = 'searchQuery';
 
   constructor(props: {}) {
     super(props);
   }
 
+  componentDidMount() {
+    this.setState((prevState) => ({
+      ...prevState,
+      searchQuery: localStorage.getItem(this._searchQueryKeyInLocalStorage) ?? ''
+    }))
+  }
+
   onSearch = (query: string | null) => {
-    this.setState((prevState) => ({...prevState, searchQuery: query}))
+    this.setState((prevState) => ({...prevState, searchQuery: query ?? ''}));
+    if (query) {
+      localStorage.setItem(this._searchQueryKeyInLocalStorage, query)
+    } else {
+      localStorage.removeItem(this._searchQueryKeyInLocalStorage)
+    }
+
   }
 
   render() {
     return (
-      <ErrorBoundary fallback={<p>Something went wrong</p>}>
-        <h1>Welcome to RS React App!</h1>
-        <Controls searchQuery={this.state.searchQuery} onSearchQueryChange={this.onSearch} />
-        <SearchResults isLoading={true} data={[]} />
-        <ThrowErrorButton />
-      </ErrorBoundary>
+      <div className="app">
+        <ErrorBoundary fallback={<p>Something went wrong</p>}>
+          <Controls searchQuery={this.state.searchQuery} onApplyFilters={this.onSearch} />
+          <SearchResults isLoading={true} data={[]} />
+          <ThrowErrorButton />
+        </ErrorBoundary>
+      </div>
     )
   }
 }
