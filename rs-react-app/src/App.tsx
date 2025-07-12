@@ -11,8 +11,17 @@ interface AppState {
   isLoading: boolean;
   resultList: UiKitCardProps[];
 }
+interface PokemonResponce {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Pokemon[];
+}
 
-export interface Pokemon {} 
+export interface Pokemon {
+  name: string;
+  url: string;
+} 
 
 class App extends Component<{}, AppState> {
   state = {
@@ -27,10 +36,13 @@ class App extends Component<{}, AppState> {
   }
 
   componentDidMount() {
+    const searchQuery = localStorage.getItem(this._searchQueryKeyInLocalStorage) ?? '';
     this.setState((prevState) => ({
       ...prevState,
-      searchQuery: localStorage.getItem(this._searchQueryKeyInLocalStorage) ?? ''
+      searchQuery
     }))
+    console.log('componentDidMount', searchQuery)
+    this.getPokemonsList(searchQuery)
   }
 
   onSearch = (query: string | null) => {
@@ -40,7 +52,27 @@ class App extends Component<{}, AppState> {
     } else {
       localStorage.removeItem(this._searchQueryKeyInLocalStorage)
     }
+    this.getPokemonsList(query)
+  }
 
+  private async getPokemonsList(query: string | null) {
+    this.setState((prevState) => ({
+      ...prevState,
+      isLoading: true,
+      resultList: []
+    }))
+    const searchQueryParam = query ? `&search=${query}` : ''
+    const resp = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=100&offset=0${searchQueryParam}`)
+    const data: PokemonResponce = await resp.json();
+    console.log('response', data)
+    this.setState((prevState) => ({
+      ...prevState,
+      isLoading: false,
+      resultList: data.results.map((pokemon) => ({
+        title: pokemon.name,
+        description: pokemon.url
+      }))
+    }))
   }
 
   render() {
@@ -48,7 +80,7 @@ class App extends Component<{}, AppState> {
       <div className="app">
         <ErrorBoundary fallback={<p>Something went wrong</p>}>
           <Controls searchQuery={this.state.searchQuery} onApplyFilters={this.onSearch} />
-          <SearchResults isLoading={true} data={[]} />
+          <SearchResults isLoading={this.state.isLoading} data={this.state.resultList} />
           <ThrowErrorButton />
         </ErrorBoundary>
       </div>
