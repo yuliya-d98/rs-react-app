@@ -2,8 +2,15 @@
     width: 100%;
     box-sizing: border-box;
     height: calc(100vh - 200px);
-    border: 1px solid gray;
+    border: var(--primary-border);
     border-radius: 8px;
     padding: 16px;
     overflow-y: auto;
+    background-color: var(--primary-background);
+
+    &.centered {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 }

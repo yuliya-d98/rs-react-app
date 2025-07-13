@@ -12,14 +12,14 @@ export default class SearchResults extends Component<SearchResultsProps> {
     render() {
         if (this.props.isLoading) {
             return (
-                <div className="search-results">
+                <div className="search-results centered">
                     <UiKitSpinner />
                 </div>
             )
         }
         if (!this.props.data.length) {
             return (
-                <div className="search-results">
+                <div className="search-results centered">
                     <p>No data</p>
                 </div>
             )

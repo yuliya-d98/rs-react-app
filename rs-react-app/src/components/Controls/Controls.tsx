@@ -34,7 +34,7 @@ export default class Controls extends Component<ControlsProps, ControlsState> {
             <div className="controls">
                 <input 
                     placeholder="Enter any search query..."
-                    type="text" 
+                    type="search" 
                     defaultValue={this.state?.searchQuery} 
                     onChange={this.onSearchQueryChange} 
                 />

@@ -11,6 +11,8 @@
     flex-direction: column;
     gap: 16px;
 
+    --primary-background: lightgray;
+    --primary-border: 1px solid gray;
   }
 }
 
